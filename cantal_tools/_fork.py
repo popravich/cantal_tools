@@ -11,7 +11,7 @@ class Branch(_Branch):
     def exit(self):
         self._parent.exit_branch(self)
 
-    def enter(self, *, end_current=True):
+    def enter(self, end_current=True):
         self._parent.enter_branch(self, end_current=end_current)
 
     @contextmanager
@@ -25,8 +25,8 @@ class Branch(_Branch):
             if cur_branch:
                 cur_branch.enter()
 
-    def _commit(self, start, fin, end=True):
-        if end:
+    def _commit(self, start, fin, increment=True):
+        if increment:
             self._counter.incr(1)
         self._duration.incr(fin - start)
 
