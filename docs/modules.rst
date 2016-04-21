@@ -19,26 +19,23 @@ werkzeug
 Module provides wrapper around werkzeug's BaseWSGIServer.
 
 
-.. class:: CantaledWSGIServer(\*args, metrics, \**kwargs)
+.. class:: CantaledWSGIServer
 
    Wrapper around ``BaseWSGIServer`` from :mod:`werkzeug.serving`
-
-   :param metrics: Metrics instance
 
    Usage::
 
       import cantal
-      from cantal_tools import Metrics, werkzeug
+      from cantal_tools import werkzeug
 
-      metrics = Metrics('my.custom.prefix')
       cantal.start()
 
       werkzeug.CantaledWSGIServer(
-          metrics=metrics,
           host='0.0.0.0',
           port=8080,
           ).server_forever()
 
+----
 
 Web metrics
 -----------
@@ -51,7 +48,7 @@ flask
 Module provides Flask application mixin overriding several methods
 for request tracing.
 
-.. class:: FlaskMixin(\*args, metrics, \**kwargs)
+.. class:: FlaskMixin
 
    Mixin overriding internal application's methods
 
@@ -61,18 +58,17 @@ for request tracing.
 
       import flask
       import cantal
-      from cantal_tools import Metrics
       from cantal_tools.flask import FlaskMixin
 
       class App(FlaskMixin, flask.Flask):
           pass
 
-      metrics = Metrics('custom-prefix')
       cantal.start()
 
-      app = App(__name__, metrics=metrics)
+      app = App(__name__)
       app.run()
 
+----
 
 Appflow metrics
 ---------------
@@ -92,13 +88,11 @@ This module provides ``patch_redis`` function and a custom ``Connection`` class:
 
       import cantal
       import redis
-      from cantal_tools import Metrics
       from cantal_tools.redis import patch_redis
 
-       metrics = Metrics('my-app-prefix')
        cantal.start()
 
-       patch_redis(redis.Redis, metrics=metrics)
+       patch_redis(redis.Redis)
        client = Redis(host='localhost', port=6379)
        client.get('some-key')
 
@@ -106,7 +100,7 @@ This module provides ``patch_redis`` function and a custom ``Connection`` class:
 If you don't like monkey-patching you can use the following connection class,
 however you'd need to instantiate :class:`redis.ConnectionPool` by yourself.
 
-.. class:: CantaledConnection(\*args, metrics, \**kwargs)
+.. class:: CantaledConnection
 
    Wrapper around :class:`redis.Connection`
 
@@ -117,12 +111,11 @@ elasticsearch
 
 .. currentmodule:: cantal_tools.elasticsearch
 
-.. class:: CantaledTransport(\*args, metrics, \**kwargs)
+.. class:: CantaledTransport
 
    Wrapper around :class:`elasticsearch.Transport`.
    Overrides ``perform_request`` method.
 
-   :param metrics: metrics instance
 
 ----
 
@@ -132,7 +125,7 @@ sqlalchemy
 .. currentmodule:: cantal_tools.sqlalchemy
 
 
-.. function:: attach_to_engine(engine, metrics)
+.. function:: attach_to_engine(engine)
 
    Attaches listeners to ``before_cursor_execute`` and ``after_cursor_execute``
    engine events.
@@ -144,14 +137,12 @@ sqlalchemy
 
       import cantal
       import sqlalchemy as sa
-      from cantal_tools import Metrics
       from cantal_tools.sqlalchemy import attach_to_engine
 
-      metrics = Metrics('my.app')
       cantal.start()
 
       db_engine = sa.create_engine('sqlite:///db.sqlite')
-      attach_to_engine(db_engine, metrics)
+      attach_to_engine(db_engine)
 
 ----
 

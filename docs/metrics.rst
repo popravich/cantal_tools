@@ -6,124 +6,68 @@ Common metrics
 
 Cantal-tools provides following metrics:
 
-   .. attribute:: Metrics.wsgi
+   .. attribute:: wsgi
     
       WSGI server group of metrics; contains the following:
 
-      .. attribute:: Metrics.wsgi.idle
+      .. attribute:: wsgi.idle
 
          Idle time and count of wsgi server;
 
-      .. attribute:: Metrics.wsgi.acquire
+      .. attribute:: wsgi.acquire
 
          Duration and number of operations of ``socket.acquire`` calls;
             
-      .. attribute:: Metrics.wsgi.process
+      .. attribute:: wsgi.process
 
          Duration and number requests processed;
 
-      .. attribute:: Metrics.wsgi.exception
+      .. attribute:: wsgi.exception
 
          Duration and number of unhandled exceptions processed;
 
-   .. attribute:: Metrics.web
+   .. attribute:: web
 
       Web framework group of metrisc, as follows:
 
-      .. attribute:: Metrics.web.handle_request
+      .. attribute:: web.handle_request
 
          Duration and number of requests handled;
 
-      .. attribute:: Metrics.web.render_template
+      .. attribute:: web.render_template
 
          Duration and number of templates rendered;
 
-      .. attribute:: Metrics.web.handle_exception
+      .. attribute:: web.handle_exception
 
          Duration and number of exceptions processed;
 
-   .. attribute:: Metrics.appflow
+   .. attribute:: appflow
     
       Application level group of metrics.
       This group of metrics is allowed to extend by developer.
 
       Basic metrics in this group are:
 
-      .. attribute:: Metrics.appflow.redis
+      .. attribute:: appflow.redis
 
          Duration and number of redis operations;
 
-      .. attribute:: Metrics.appflow.sqlalchemy
+      .. attribute:: appflow.sqlalchemy
 
          Duration and number of SqlAlchemy queries;
 
-      .. attribute:: Metrics.appflow.elasticsearch
+      .. attribute:: appflow.elasticsearch
 
          Duration and number of Elasticsearch queries;
 
-Metrics class
--------------
 
-.. currentmodule:: cantal_tools.metrics
+Extending common metrics
+------------------------
 
+WIP
 
-.. class:: Metrics(namespace, extra_branches=())
+Custom metrics
+--------------
 
-   Is a container for metrics
-
-   :param str namespace: Namespace prefix for metrics
-   :param extra_branches: Extra branches to define for ``appflow`` metrics group
-   :type extra_branches: :class:`list`, :class:`tuple`
-
-   Basic usage::
-
-      import cantal
-      from cantal_tools import Metrics, werkzeug
-
-      metrics = Metrics('my.custom.prefix')
-      cantal.start()
-
-      werkzeug.CantaledWSGIServer(
-          metrics=metrics,
-          host='0.0.0.0',
-          port=8080,
-          ).server_forever()
-
-   Adding & using extra branches::
-
-      import cantal
-      from cantal_tools import Metrics
-
-      metrics = Metrics('my.app', extra_branches=('notify_user'))
-      cantal.start()
-
-      def handler(request):
-          # do stuff...
-          with metrics.appflow.notify_user.context():
-              send_some_notification(request)
-          # continue doing stuff...
-
-   .. attribute:: wsgi
-
-      Is a :class:`cantal.Fork` instance with following branches:
-
-      * :attr:`Metrics.wsgi.idle`
-      * :attr:`Metrics.wsgi.acquire`
-      * :attr:`Metrics.wsgi.process`
-      * :attr:`Metrics.wsgi.exception`
-
-   .. attribute:: web
-
-      Is a :class:`cantal.Fork` instance with following branches:
-
-      * :attr:`Metrics.web.handle_request`
-      * :attr:`Metrics.web.render_template`
-      * :attr:`Metrics.web.handle_exception`
-
-   .. attribute:: appflow
-
-      Is a :class:`cantal.Fork` instance with following branches:
-
-      * :attr:`Metrics.appflow.redis`
-      * :attr:`Metrics.appflow.sqlalchemy`
-      * :attr:`Metrics.appflow.elasticsearch`
+WIP
