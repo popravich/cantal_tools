@@ -1,4 +1,5 @@
-from .metrics import Metrics
+from . import metrics
 
+__version__ = '0.2.0'
 
-__all__ = ['Metrics']
+__all__ = ['metrics']

@@ -6,17 +6,21 @@ from werkzeug.serving import WSGIRequestHandler as _WSGIRequestHandler
 from werkzeug.exceptions import InternalServerError
 from werkzeug._compat import reraise
 
+from .metrics import wsgi
+
 
 __all__ = [
     'CantaledWSGIServer',
     ]
 
 
+wsgi.ensure_branches('idle', 'acquire', 'exception', 'process')
+
+
 class CantaledWSGIServer(BaseWSGIServer):
 
     def __init__(self, host, port, app, handler=None,
-                 passthrough_errors=False, ssl_context=None, fd=None,
-                 metrics=None):
+                 passthrough_errors=False, ssl_context=None, fd=None):
         if handler is not None:
             assert issubclass(handler, WSGIRequestHandler), type(handler)
         else:
@@ -26,31 +30,30 @@ class CantaledWSGIServer(BaseWSGIServer):
                          passthrough_errors=passthrough_errors,
                          ssl_context=ssl_context,
                          fd=fd)
-        self._metrics = metrics
 
     def serve_forever(self):
-        with self._metrics.wsgi.context():
-            self._metrics.wsgi.idle.enter()
+        with wsgi.context():
+            wsgi.idle.enter()
             return super().serve_forever()
 
     def get_request(self):
-        self._metrics.wsgi.acquire.enter()
+        wsgi.acquire.enter()
         return super().get_request()
 
     def handle_error(self, request, client_address):
-        self._metrics.wsgi.exception.enter()
+        wsgi.exception.enter()
         return super().handle_error(request, client_address)
 
 
 class WSGIRequestHandler(_WSGIRequestHandler):
 
     def setup(self):
-        self.server._metrics.wsgi.process.enter()
+        wsgi.process.enter()
         super().setup()
 
     def finish(self):
         super().finish()
-        self.server._metrics.wsgi.idle.enter()
+        wsgi.idle.enter()
 
     def run_wsgi(self):
         # XXX: Copy paste of _WSGIRequestHandler.run_wsgi
@@ -120,7 +123,7 @@ class WSGIRequestHandler(_WSGIRequestHandler):
             self.connection_dropped(e, environ)
         except Exception:
             # XXX: all that copy-paste for the sake of this line
-            self.server._metrics.wsgi.exception.enter()
+            wsgi.exception.enter()
 
             if self.server.passthrough_errors:
                 raise
