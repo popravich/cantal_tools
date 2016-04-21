@@ -1,0 +1,5 @@
+.vagga
+dist
+docs/_build
+docs/_*.rst
+docs/_static
