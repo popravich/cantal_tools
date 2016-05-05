@@ -14,6 +14,7 @@ appflow.ensure_branches('redis')
 
 
 def patch_redis(redis):
+    """Wraps `execute_command` method."""
     real_func = redis.execute_command
 
     @wraps(real_func)

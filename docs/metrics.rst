@@ -8,7 +8,8 @@ Cantal-tools provides following metrics:
 
    .. attribute:: wsgi
     
-      WSGI server group of metrics; contains the following:
+      WSGI server group of metrics.
+      Contains the following:
 
       .. attribute:: wsgi.idle
 
@@ -26,6 +27,8 @@ Cantal-tools provides following metrics:
 
          Duration and number of unhandled exceptions processed;
 
+      See :ref:`wsgi metrics` for tools & examples using this metrics.
+
    .. attribute:: web
 
       Web framework group of metrisc, as follows:
@@ -41,6 +44,8 @@ Cantal-tools provides following metrics:
       .. attribute:: web.handle_exception
 
          Duration and number of exceptions processed;
+
+      See :ref:`web metrics` for tools & examples using this metrics.
 
    .. attribute:: appflow
     
@@ -61,13 +66,39 @@ Cantal-tools provides following metrics:
 
          Duration and number of Elasticsearch queries;
 
+      See :ref:`appflow metrics` for tools & examples using this metrics.
+
 
 Extending common metrics
 ------------------------
 
-WIP
+Existing metrics can be extended with following code:
+
+.. code-block:: python
+
+   # my extra appflow metrics
+   import cantal
+   import requests
+   from cantal_tools.metrics import appflow
+
+   appflow.ensure_branches('external_http', 'upload_file')
+   cantal.start()
+
+   def handler(request):
+      with appflow.external_http.context():
+         requests.get('http://some.host/...')
+      with appflow.upload_file.context():
+         do_file_upload(request.files)
+
+.. warning::
+
+   Custom branches **MUST** be registered before ``cantal.start()`` call.
+
 
 Custom metrics
 --------------
 
-WIP
+Custom metrics are just :mod:`cantal` metrics, please see
+`cantal's documentation`__ for this.
+
+__ http://cantal-py.readthedocs.org

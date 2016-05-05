@@ -8,13 +8,15 @@ Modules Reference
 
 This is the reference of ``cantal_tools`` package modules.
 
+.. _wsgi metrics:
+
 WSGI metrics
 ------------
 
-werkzeug
-~~~~~~~~
+werkzeug_serving
+~~~~~~~~~~~~~~~~
 
-.. currentmodule:: cantal_tools.werkzeug
+.. currentmodule:: cantal_tools.werkzeug_serving
 
 Module provides wrapper around werkzeug's BaseWSGIServer.
 
@@ -26,16 +28,18 @@ Module provides wrapper around werkzeug's BaseWSGIServer.
    Usage::
 
       import cantal
-      from cantal_tools import werkzeug
+      from cantal_tools import werkzeug_serving
 
       cantal.start()
 
-      werkzeug.CantaledWSGIServer(
+      werkzeug_serving.CantaledWSGIServer(
           host='0.0.0.0',
           port=8080,
           ).server_forever()
 
 ----
+
+.. _web metrics:
 
 Web metrics
 -----------
@@ -70,6 +74,8 @@ for request tracing.
 
 ----
 
+.. _appflow metrics:
+
 Appflow metrics
 ---------------
 
@@ -98,7 +104,7 @@ This module provides ``patch_redis`` function and a custom ``Connection`` class:
 
 
 If you don't like monkey-patching you can use the following connection class,
-however you'd need to instantiate :class:`redis.ConnectionPool` by yourself.
+however you'd need to instantiate :class:`redis.ConnectionPool` yourself.
 
 .. class:: CantaledConnection
 
@@ -131,7 +137,6 @@ sqlalchemy
    engine events.
 
    :param engine: SQLAlchemy db engine
-   :param metrics: metrics instance
 
    Usage::
 
@@ -154,6 +159,7 @@ django
 .. function:: patch_models_manager(django.db.models.Manager)
 
    Patches supplied django models :class:`django.db.models.Manager` class
+   (wraps ``get_queryset`` method).
 
    Usage::
 

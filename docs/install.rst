@@ -1,11 +1,13 @@
 Installation
 ============
 
-:mod:`cantal_tools` can be installed manually by downloading package:
+Using ``pip install`` to get latest (stable) release:
 
-.. include:: _latestpackage.rst
+.. code-block:: bash
 
-Or by using ``pip install`` command with some extras:
+   $ pip intall cantal_tools
+
+Or you can build it from source:
 
 .. code-block:: bash
 

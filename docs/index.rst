@@ -6,11 +6,7 @@
 Welcome to Cantal Tools's documentation!
 ========================================
 
-High level tools for cantal metrics collection system.
-
-:Documentation: http://cantal_tools.readthedocs.org/
-
-.. include:: _latestpackage.rst
+High level tools for `cantal`_ metrics collection system.
 
 Basic usage:
 
@@ -42,3 +38,5 @@ Indices and tables
 * :ref:`modindex`
 * :ref:`search`
 
+
+.. _cantal: http://cantal-py.readthedocs.io

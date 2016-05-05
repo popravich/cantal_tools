@@ -228,12 +228,3 @@ dummy:
 	$(SPHINXBUILD) -b dummy $(ALLSPHINXOPTS) $(BUILDDIR)/dummy
 	@echo
 	@echo "Build finished. Dummy builder generates no files."
-
-
-.PHONY: packages
-PACKAGE_DIR ?= /src/package
-packages:
-	find . -name "_latestpackage.rst" -delete
-	for file in $$(ls $(PACKAGE_DIR)); do \
-		echo ":Package: :download:\`$$file <../..$(PACKAGE_DIR)/$$file>\`" >> _latestpackage.rst; \
-	done;
