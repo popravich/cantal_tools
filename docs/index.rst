@@ -13,7 +13,7 @@ Basic usage:
 .. code-block:: python
 
    import cantal
-   from cantal_tools.werkzeug import CantaledWSGIServer
+   from cantal_tools.werkzeug_serving import CantaledWSGIServer
 
    cantal.start()
 
