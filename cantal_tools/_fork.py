@@ -1,12 +1,17 @@
 import time
 import cantal
+
+from cantal import fork
 from contextlib import contextmanager
-from cantal.fork import Fork as _Fork, Branch as _Branch
-from cantal import collection as cc
 
 
-class Branch(_Branch):
-    __slots__ = _Branch.__slots__
+class Branch(fork.Branch):
+    __slots__ = fork.Branch.__slots__
+
+    def __init__(self, suffix, state, parent, **kwargs):
+        super().__init__(suffix, state, parent, **kwargs)
+        self._errors = cantal.Counter(state=state + '.' + suffix,
+                                      metric='errors', **kwargs)
 
     def exit(self):
         self._parent.exit_branch(self)
@@ -20,6 +25,9 @@ class Branch(_Branch):
         self._parent.enter_branch(self, end_current=False)
         try:
             yield
+        except Exception:
+            self._errors.incr(1)
+            raise
         finally:
             self.exit()
             if cur_branch:
@@ -31,7 +39,7 @@ class Branch(_Branch):
         self._duration.incr(fin - start)
 
 
-class Fork(_Fork):
+class Fork(fork.Fork):
     """Custom Fork class without branches argument, instead
     ensure_branch must be used.
     """
@@ -43,7 +51,7 @@ class Fork(_Fork):
         self._branch = None
         # We do our best not to crash any code which does accouning the
         # wrong way. So to report the problems we use a separate counter
-        self._err = None
+        self._err = cantal.Counter(metric="err", **self._kwargs)
 
     def enter_branch(self, branch, end_current=True):
         ts = int(time.time()*1000)
@@ -63,8 +71,6 @@ class Fork(_Fork):
         self._branch = None
 
     def ensure_branches(self, *branches):
-        if isinstance(cc.global_collection, cc.ActiveCollection):
-            raise RuntimeError("cantal.start() alredy called")
         ret = []
         for name in branches:
             branch = getattr(self, name, None)
@@ -73,8 +79,6 @@ class Fork(_Fork):
                 branch = Branch(name, parent=self, **self._kwargs)
                 setattr(self, name, branch)
             ret.append(branch)
-        if self._err is None:
-            self._err = cantal.Counter(metric="err", **self._kwargs)
         if len(branches) == 1:
             return ret[0]
         return ret
