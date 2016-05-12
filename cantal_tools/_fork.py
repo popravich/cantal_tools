@@ -82,3 +82,22 @@ class Fork(fork.Fork):
         if len(branches) == 1:
             return ret[0]
         return ret
+
+    @contextmanager
+    def context(self):
+        if self._branch is not None:
+            self._err.incr()
+        self._branch = None
+        self._state.enter('_')
+        try:
+            yield
+        except Exception:
+            if self._branch is not None:
+                self._branch._errors.incr(1)
+            raise
+        finally:
+            ts = int(time.time()*1000)
+            if self._branch is not None:
+                self._branch._commit(self._timestamp, ts)
+            self._state.exit()
+            self._branch = None
