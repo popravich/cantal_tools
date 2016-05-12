@@ -6,7 +6,7 @@ from contextlib import contextmanager
 
 
 class Branch(fork.Branch):
-    __slots__ = fork.Branch.__slots__
+    __slots__ = fork.Branch.__slots__ + ('_errors',)
 
     def __init__(self, suffix, state, parent, **kwargs):
         super(Branch, self).__init__(suffix, state, parent, **kwargs)
