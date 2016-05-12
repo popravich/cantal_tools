@@ -30,4 +30,5 @@ class CantaledConnection(redis.Connection):
 
     def execute_command(self, *args, **options):
         with appflow.redis.context():
-            return super().execute_command(*args, **options)
+            return super(CantaledConnection, self).execute_command(
+                *args, **options)

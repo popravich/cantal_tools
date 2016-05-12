@@ -9,7 +9,7 @@ class Branch(fork.Branch):
     __slots__ = fork.Branch.__slots__
 
     def __init__(self, suffix, state, parent, **kwargs):
-        super().__init__(suffix, state, parent, **kwargs)
+        super(Branch, self).__init__(suffix, state, parent, **kwargs)
         self._errors = cantal.Counter(state=state + '.' + suffix,
                                       metric='errors', **kwargs)
 

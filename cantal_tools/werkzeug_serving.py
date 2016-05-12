@@ -25,34 +25,36 @@ class CantaledWSGIServer(BaseWSGIServer):
             assert issubclass(handler, WSGIRequestHandler), type(handler)
         else:
             handler = WSGIRequestHandler
-        super().__init__(host=host, port=port, app=app,
-                         handler=handler,
-                         passthrough_errors=passthrough_errors,
-                         ssl_context=ssl_context,
-                         fd=fd)
+        super(CantaledWSGIServer, self).__init__(
+            host=host, port=port, app=app,
+            handler=handler,
+            passthrough_errors=passthrough_errors,
+            ssl_context=ssl_context,
+            fd=fd)
 
     def serve_forever(self):
         with wsgi.context():
             wsgi.idle.enter()
-            return super().serve_forever()
+            return super(CantaledWSGIServer, self).serve_forever()
 
     def get_request(self):
         wsgi.acquire.enter()
-        return super().get_request()
+        return super(CantaledWSGIServer, self).get_request()
 
     def handle_error(self, request, client_address):
         wsgi.exception.enter()
-        return super().handle_error(request, client_address)
+        return super(CantaledWSGIServer, self).handle_error(
+            request, client_address)
 
 
 class WSGIRequestHandler(_WSGIRequestHandler):
 
     def setup(self):
         wsgi.process.enter()
-        super().setup()
+        super(WSGIRequestHandler, self).setup()
 
     def finish(self):
-        super().finish()
+        super(WSGIRequestHandler, self).finish()
         wsgi.idle.enter()
 
     def run_wsgi(self):
