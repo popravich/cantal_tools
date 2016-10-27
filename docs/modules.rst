@@ -96,11 +96,11 @@ This module provides ``patch_redis`` function and a custom ``Connection`` class:
       import redis
       from cantal_tools.redis import patch_redis
 
-       cantal.start()
+      cantal.start()
 
-       patch_redis(redis.Redis)
-       client = Redis(host='localhost', port=6379)
-       client.get('some-key')
+      patch_redis(redis.Redis)
+      client = Redis(host='localhost', port=6379)
+      client.get('some-key')
 
 
 If you don't like monkey-patching you can use the following connection class,
